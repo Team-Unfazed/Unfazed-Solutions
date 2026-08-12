@@ -1,0 +1,452 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Design tokens.
+   Every colour on this site comes from here. Nothing hardcodes a hex.
+   The palette is deliberately achromatic — the only colour that appears
+   anywhere is inside the logo mark and the award photography on hover.
+
+   `static` keeps every token in the output even when it is only ever read
+   through `var()` in an arbitrary value rather than through a named utility.
+   --------------------------------------------------------------------------- */
+@theme static {
+  --color-bg: #0a0a0a;
+  --color-card: #161616;
+  --color-fg: #f0f0f0;
+  --color-cta: #ffffff;
+  --color-cta-fg: #0a0a0a;
+  --color-cta-2: #1e1e1e;
+  --color-cta-2-fg: #e0e0e0;
+  --color-accent: #d0d0d0;
+  --color-bg-accent: #434343;
+
+  --font-display: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, "SFMono-Regular", monospace;
+
+  /* Section rhythm. One dial for the whole page. */
+  --spacing-section: clamp(6rem, 12vw, 12rem);
+  --spacing-gutter: clamp(1.25rem, 4vw, 4.5rem);
+
+  --radius-card: 14px;
+
+  /* A single easing family, used everywhere. See lib/animations.ts for the
+     JS-side mirrors of these curves. */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+  --ease-glide: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* ---------------------------------------------------------------------------
+   Base. These MUST live inside `@layer base`: unlayered rules outrank every
+   cascade layer, so an unlayered `button { color: inherit }` would silently
+   beat any text-colour utility placed on a button.
+   --------------------------------------------------------------------------- */
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    /* Lenis drives scrolling; native smooth-scroll would fight it. */
+    scroll-behavior: auto;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    margin: 0;
+    background-color: var(--color-bg);
+    color: var(--color-fg);
+    font-family: var(--font-display);
+    font-synthesis-weight: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: var(--color-fg);
+    color: var(--color-bg);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-fg);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  button,
+  input,
+  textarea {
+    font: inherit;
+    color: inherit;
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  img {
+    max-width: 100%;
+    display: block;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Typography roles
+   Display  — Archivo, pushed wide on the wdth axis. Confident, engineered.
+   Mono     — JetBrains Mono for eyebrows, meta and data. The team's own
+              vernacular: it is the typeface in their editors.
+   --------------------------------------------------------------------------- */
+@layer components {
+  .type-display {
+    font-family: var(--font-display);
+    font-variation-settings: "wdth" 118;
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    line-height: 0.92;
+    text-wrap: balance;
+  }
+
+  .type-display-xl {
+    font-family: var(--font-display);
+    font-variation-settings: "wdth" 125;
+    font-weight: 800;
+    letter-spacing: -0.045em;
+    line-height: 0.86;
+  }
+
+  /* The wordmark, set to span the shell exactly. Sized against a capped
+     container rather than the viewport, because the shell stops growing at
+     1560px while `vw` does not — letters would run past the rules on a wide
+     monitor.
+
+     The coefficient is not free: at this weight and width the seven letters
+     measure ~6.34x the font size, and the shell is narrower than the viewport
+     by two gutters. Anything above ~13.9vw overflows the last letter off the
+     right rule, which is what 14.6vw was quietly doing. */
+  .wordmark {
+    font-family: var(--font-display);
+    font-variation-settings: "wdth" 125;
+    font-weight: 800;
+    font-size: clamp(2.4rem, 13vw, 12.5rem);
+    letter-spacing: 0;
+    line-height: 0.84;
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .type-body {
+    font-family: var(--font-display);
+    font-variation-settings: "wdth" 100;
+    font-weight: 400;
+    letter-spacing: -0.005em;
+    line-height: 1.55;
+    color: var(--color-accent);
+  }
+
+  .type-mono {
+    font-family: var(--font-mono);
+    font-weight: 400;
+    font-size: 0.6875rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  /* -------------------------------------------------------------------------
+     Structural substrate.
+     Thin vertical rules running the full page height, aligned to the container
+     edges. They are the drawing sheet the page is set on — not decoration.
+     ------------------------------------------------------------------------- */
+
+  .page-rules {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .page-rules::before,
+  .page-rules::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--color-bg-accent);
+    opacity: 0.28;
+  }
+
+  .page-rules::before {
+    left: var(--spacing-gutter);
+  }
+  .page-rules::after {
+    right: var(--spacing-gutter);
+  }
+
+  /* Film grain. A static repeating texture, so it costs one composited layer
+     and never repaints. */
+  /* Sits above every section so the texture is even across the page rather
+     than being occluded by sections that open their own stacking context. */
+  .grain {
+    position: fixed;
+    inset: -50%;
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0.026;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+    will-change: transform;
+  }
+
+  .shell {
+    width: 100%;
+    max-width: 1560px;
+    margin-inline: auto;
+    padding-inline: calc(var(--spacing-gutter) + clamp(1rem, 2vw, 2.5rem));
+  }
+
+  .hairline {
+    height: 1px;
+    background: var(--color-bg-accent);
+    opacity: 0.45;
+    border: 0;
+    margin: 0;
+  }
+
+  /* GPU-friendly card surface used by services, stats and testimonials. */
+  .surface {
+    background: var(--color-card);
+    border: 1px solid color-mix(in srgb, var(--color-bg-accent) 55%, transparent);
+    border-radius: var(--radius-card);
+  }
+
+  /* The discipline cards are the only things on the page that leave the sheet
+     and travel across it, so they are the only surface lit to sit above it.
+     Same two greys as `.surface`, pulled apart top to bottom so an edge reads
+     even when several of them are overlapping on the arc. */
+  .surface-raised {
+    background: linear-gradient(
+      175deg,
+      color-mix(in srgb, var(--color-card) 86%, var(--color-fg)) 0%,
+      var(--color-card) 52%,
+      color-mix(in srgb, var(--color-card) 90%, var(--color-bg)) 100%
+    );
+    border: 1px solid color-mix(in srgb, var(--color-bg-accent) 90%, transparent);
+    border-radius: var(--radius-card);
+  }
+
+  /* Supporting copy that must stay legible thirteen times over without
+     competing with the name above it. */
+  .type-note {
+    font-family: var(--font-display);
+    font-variation-settings: "wdth" 100;
+    font-weight: 400;
+    letter-spacing: -0.005em;
+    line-height: 1.5;
+    color: color-mix(in srgb, var(--color-accent) 60%, var(--color-bg));
+  }
+
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee-drift 42s linear infinite;
+    will-change: transform;
+  }
+
+  /* -------------------------------------------------------------------------
+     Clients room.
+     Panels standing off the sheet, blurring the headline that runs behind them,
+     so the sentence is never wholly readable at once — the way a wall of framed
+     quotes covers the wall it hangs on.
+
+     The ground is `--color-bg` exactly, not a shade near it: a section with its
+     own black cuts a visible seam where it meets the page. All the depth here
+     comes from the panels and from an achromatic lift that is masked away
+     before it can reach either edge. Every value is a site token; the palette
+     stays grey, as it does everywhere else.
+     ------------------------------------------------------------------------- */
+  .clients-room {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background: var(--color-bg);
+  }
+
+  /* A soft rise in the sheet where the panels gather, so they have something to
+     stand off. Feathered top and bottom — it must never touch a section edge. */
+  .clients-room::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(
+        72% 56% at 24% 30%,
+        color-mix(in srgb, var(--color-fg) 5%, transparent) 0%,
+        transparent 66%
+      ),
+      radial-gradient(
+        60% 48% at 80% 78%,
+        color-mix(in srgb, var(--color-fg) 3%, transparent) 0%,
+        transparent 64%
+      );
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      #000 20%,
+      #000 78%,
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      #000 20%,
+      #000 78%,
+      transparent 100%
+    );
+  }
+
+  /* The monument. A ghost in the sheet, not a shout: it runs from mid-grey at
+     the first line down to near-ground by the last, so the panels' own type
+     stays the brightest thing in the section and the tail gives way to them
+     rather than fighting through. */
+  .clients-monument {
+    font-family: var(--font-display);
+    font-variation-settings: "wdth" 112;
+    font-weight: 600;
+    /* Sized to set each line of MONUMENT on ONE line inside its container. Go
+       larger and the lines wrap, which doubles the height and turns the
+       headline into a wall. Check both together before changing either. */
+    font-size: clamp(2.2rem, 8vw, 9.1rem);
+    letter-spacing: -0.034em;
+    line-height: 0.9;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--color-fg) 24%, var(--color-bg));
+    background: linear-gradient(
+      177deg,
+      color-mix(in srgb, var(--color-fg) 30%, var(--color-bg)) 0%,
+      color-mix(in srgb, var(--color-fg) 20%, var(--color-bg)) 50%,
+      color-mix(in srgb, var(--color-fg) 12%, var(--color-bg)) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* One quote panel. Glass, not card: the fill is a thin white tint rather than
+     a grey, so almost all of what you see through it is the monument behind,
+     blurred. The tint runs strongest along the top edge, the way light catches
+     the lip of a real pane. Achromatic throughout — it is `--color-fg` at low
+     alpha, nothing else. */
+  .clients-panel {
+    position: relative;
+    /* Square corners. These are slabs, not tiles — the site's 14px radius reads
+       as a generic app card at this size. */
+    border-radius: 2px;
+    background: linear-gradient(
+      163deg,
+      color-mix(in srgb, var(--color-fg) 19%, transparent) 0%,
+      color-mix(in srgb, var(--color-fg) 11%, transparent) 38%,
+      color-mix(in srgb, var(--color-fg) 8%, transparent) 74%,
+      color-mix(in srgb, var(--color-fg) 13%, transparent) 100%
+    );
+    backdrop-filter: blur(26px) saturate(1.08);
+    -webkit-backdrop-filter: blur(26px) saturate(1.08);
+    /* What makes it read as a physical slab rather than a rectangle of fill:
+       the top and left edges are lit, the bottom and right are in shade, so the
+       panel has a thickness. No `border` — a uniform one flattens all four
+       edges back to the same value and the effect dies. The drop is cast in
+       black because `--color-bg` is the ground it falls on. */
+    box-shadow:
+      inset 0 1px 0 0 color-mix(in srgb, var(--color-fg) 28%, transparent),
+      inset 1px 0 0 0 color-mix(in srgb, var(--color-fg) 15%, transparent),
+      inset 0 -1px 0 0 rgb(0 0 0 / 0.55),
+      inset -1px 0 0 0 rgb(0 0 0 / 0.38),
+      0 0 0 1px color-mix(in srgb, var(--color-fg) 8%, transparent),
+      0 46px 92px -40px rgb(0 0 0 / 0.92),
+      0 12px 28px -14px rgb(0 0 0 / 0.68);
+    /* These are transformed every frame against scroll. */
+    will-change: transform;
+  }
+
+  /* Stands where the client's logo would. Clients cannot be named, so the
+     sector is set as the wordmark. */
+  .clients-mark {
+    font-family: var(--font-display);
+    font-variation-settings: "wdth" 118;
+    font-weight: 700;
+    font-size: clamp(1.05rem, 1.32vw, 1.45rem);
+    letter-spacing: -0.028em;
+    line-height: 1;
+    color: var(--color-fg);
+  }
+
+  .clients-quote {
+    font-family: var(--font-display);
+    font-variation-settings: "wdth" 100;
+    font-weight: 400;
+    font-size: clamp(0.92rem, 1.04vw, 1.06rem);
+    letter-spacing: -0.003em;
+    line-height: 1.58;
+    color: var(--color-accent);
+    margin: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .page-rules {
+    display: none;
+  }
+
+  .shell {
+    padding-inline: 1.25rem;
+  }
+}
+
+/* Lenis needs the document to be the scroller and its wrapper unclipped. */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* Marquee. Transform-only, so it never triggers layout. */
+@keyframes marquee-drift {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Reduced motion. Everything ambient stops; reveals become instant.
+   --------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .marquee-track {
+    animation: none;
+    transform: none;
+  }
+
+  .grain {
+    display: none;
+  }
+}
