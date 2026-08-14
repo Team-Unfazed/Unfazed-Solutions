@@ -11,7 +11,7 @@ export const SITE = {
   name: "Unfazed Solution",
   wordmark: "UNFAZED",
   suffix: "SOLUTION",
-  email: "unfazedsolutions@gmail.com",
+  email: "support@unfazedsolutions.online",
   phone: "+91 7700085191",
   location: "Mumbai, India",
   /** Shown in the hero meta row. PLACEHOLDER — see CONTENT-TODO.md §8. */
