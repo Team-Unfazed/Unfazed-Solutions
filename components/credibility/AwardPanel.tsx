@@ -58,13 +58,13 @@ export function AwardPanel({
         ) : null}
       </div>
 
-      <div className="mt-6 flex items-start justify-between gap-6">
+      <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
         <div>
           <h3
             className={`type-display text-[color:var(--color-fg)] ${
               featured
-                ? "text-[clamp(1.5rem,2.6vw,2.25rem)]"
-                : "text-[clamp(1.2rem,1.8vw,1.5rem)]"
+                ? "text-[clamp(1.3rem,2.6vw,2.25rem)]"
+                : "text-[clamp(1.1rem,1.8vw,1.5rem)]"
             }`}
           >
             {award.placement}
@@ -73,7 +73,7 @@ export function AwardPanel({
             {award.event}
           </p>
         </div>
-        <p className="type-mono shrink-0 text-right text-[color:var(--color-bg-accent)]">
+        <p className="type-mono shrink-0 text-[color:var(--color-bg-accent)] sm:text-right">
           {award.year}
           <span className="mt-1 block normal-case tracking-[0.08em]">
             {award.location}
