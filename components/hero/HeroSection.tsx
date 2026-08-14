@@ -143,7 +143,7 @@ export function HeroSection() {
         style={{ y: metaY, opacity: metaOpacity }}
       >
         <motion.div
-          className="flex items-baseline justify-between gap-4"
+          className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4"
           initial={{ opacity: 0 }}
           animate={ready ? { opacity: 1 } : {}}
           transition={{ duration: 1, ease: EASE.outExpo, delay }}
@@ -254,7 +254,7 @@ export function HeroSection() {
           transition={{ duration: 1, ease: EASE.outExpo, delay: delay + 0.68 }}
         >
           <hr className="hairline" />
-          <dl className="flex flex-wrap items-center gap-x-8 gap-y-3 pt-4">
+          <dl className="flex flex-wrap items-center gap-x-6 gap-y-2 pt-4 sm:gap-x-8 sm:gap-y-3">
             {FACTS.map((fact) => (
               <div key={fact.label} className="flex items-baseline gap-2">
                 <dt className="type-mono text-[color:var(--color-fg)]">

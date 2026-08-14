@@ -249,7 +249,7 @@ export const FOUNDERS: Founder[] = [
     id: "yash-tambe",
     name: "Yash Tambe",
     role: "DevOps Engineer",
-    image: "/images/Yash Tambe.jpg",
+    image: "/images/Yash Tambe.png",
     bio: "Yash owns the path from a merged commit to a live URL. Pipelines, environments, monitoring and rollbacks — so that shipping on a Friday is a decision, not a gamble.",
     owns: ["CI/CD", "Environments & releases", "Monitoring"],
   },

@@ -43,13 +43,13 @@ export function CredibilitySection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={VIEWPORT}
               transition={{ ...transition.enter, delay: index * 0.1 }}
-              className="flex flex-col gap-3 border-b border-[color:var(--color-bg-accent)]/50 py-9 md:border-b-0 md:px-10 md:first:pl-0 md:last:pr-0 md:[&:not(:first-child)]:border-l md:[&:not(:first-child)]:border-[color:var(--color-bg-accent)]/50"
+              className="flex flex-col gap-3 border-b border-[color:var(--color-bg-accent)]/50 py-7 md:border-b-0 md:px-10 md:py-9 md:first:pl-0 md:last:pr-0 md:[&:not(:first-child)]:border-l md:[&:not(:first-child)]:border-[color:var(--color-bg-accent)]/50"
             >
               <dt className="sr-only">{stat.label}</dt>
               <dd>
                 <StatCounter
                   display={stat.value}
-                  className="type-display-xl block whitespace-nowrap text-[clamp(2.4rem,5.2vw,4.25rem)] text-[color:var(--color-fg)]"
+                  className="type-display-xl block text-[clamp(1.8rem,8vw,4.25rem)] text-[color:var(--color-fg)]"
                 />
                 <span className="type-mono mt-4 block text-[color:var(--color-accent)]">
                   {stat.label}
