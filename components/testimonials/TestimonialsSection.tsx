@@ -2,30 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion, useScroll, useSpring } from "framer-motion";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { TESTIMONIALS } from "@/lib/constants";
 import { transition, VIEWPORT } from "@/lib/animations";
 import { TestimonialPanel, type CanvasMetrics } from "./TestimonialPanel";
 
-/**
- * Where each panel is laid on the wide canvas, as fractions of it — so the
- * arrangement scales with the viewport instead of breaking at one width, and so
- * the entry and exit offsets can be computed from real geometry rather than
- * guessed at in `vw`.
- *
- * The row climbs to the third panel and falls away again; the first hangs off
- * the left edge so the group reads as part of something wider than the page.
- *
- * `window` is the slice of the section's scroll pass over which that panel
- * makes its crossing. Before and after its own window a panel is parked
- * off-screen, which is what keeps the section empty when you first reach it.
- *
- * The windows are offset only slightly at the start and get progressively
- * shorter left to right, so the rightmost panel crosses fastest. That puts the
- * compression late: the row is still cleanly spaced where you read it, and only
- * closes up on itself on the way out. Widening these offsets pulls the panels
- * together early and they start cutting each other's text — the gaps between
- * them are only ~46px to begin with.
- */
 const PLACEMENT = [
   { left: -0.02, top: 0.34, width: 0.22, rotate: -1.2, drift: 12, window: [0, 0.9] },
   { left: 0.235, top: 0.22, width: 0.22, rotate: 1.0, drift: -8, window: [0.006, 0.885] },
@@ -33,16 +14,7 @@ const PLACEMENT = [
   { left: 0.745, top: 0.25, width: 0.22, rotate: 1.4, drift: -4, window: [0.018, 0.855] },
 ] as const;
 
-/** Clearance past the edge — enough that the shadow and the tilt are gone too. */
 const CLEARANCE = 72;
-
-/**
- * The monument, pre-broken. Short lines are what let the type be set this
- * large: a line that wraps here doubles the height and turns the headline into
- * a wall. If you change this copy, re-measure the longest line against
- * `.clients-monument`'s font-size — the widest is currently ~87% of the
- * container, which is the headroom to keep.
- */
 const MONUMENT = ["Ask the", "people who", "paid for it."];
 
 export function TestimonialsSection() {
@@ -52,8 +24,21 @@ export function TestimonialsSection() {
   const [isWide, setIsWide] = useState(false);
   const [metrics, setMetrics] = useState<CanvasMetrics | null>(null);
 
-  // The scatter needs room the phone does not have, so below lg the panels
-  // stack square and still and the monument sits above them.
+  // Mobile editorial slider state
+  const [active, setActive] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+
+  const handleChange = (index: number) => {
+    if (index === active || isTransitioning) return;
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setActive(index);
+      setTimeout(() => setIsTransitioning(false), 50);
+    }, 250);
+  };
+  const handlePrev = () => handleChange(active === 0 ? TESTIMONIALS.length - 1 : active - 1);
+  const handleNext = () => handleChange(active === TESTIMONIALS.length - 1 ? 0 : active + 1);
+
   useEffect(() => {
     const query = window.matchMedia("(min-width: 1024px)");
     const sync = () => setIsWide(query.matches);
@@ -62,8 +47,6 @@ export function TestimonialsSection() {
     return () => query.removeEventListener("change", sync);
   }, []);
 
-  // A panel has to clear the viewport, not the canvas, so the crossing needs
-  // both the canvas width and where it sits inside the window.
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -86,36 +69,21 @@ export function TestimonialsSection() {
     offset: ["start end", "end start"],
   });
 
-  // One spring for the whole row, so the panels glide rather than tracking the
-  // wheel one-to-one — and so they stay in step with each other while doing it.
-  const glide = useSpring(scrollYProgress, {
-    stiffness: 58,
-    damping: 28,
-    mass: 1,
-  });
+  const glide = useSpring(scrollYProgress, { stiffness: 58, damping: 28, mass: 1 });
 
   const scattered = isWide && !reduceMotion && metrics !== null;
 
-  /**
-   * One crossing, shared by every panel, measured from the outer edges of the
-   * whole row. It has to be shared: deriving each panel's own entry and exit
-   * from its own resting position algebraically cancels that position out, so
-   * every panel lands on the same screen x at the same moment and the row
-   * collapses into a single stack. Moving them all by the same offset is what
-   * preserves the spread between them.
-   */
   const crossing = metrics
     ? (() => {
         const lefts = PLACEMENT.map((p) => p.left);
         const rights = PLACEMENT.map((p) => p.left + p.width);
         const rowLeft = metrics.offsetLeft + Math.min(...lefts) * metrics.width;
         const rowRight = metrics.offsetLeft + Math.max(...rights) * metrics.width;
-        return {
-          enter: metrics.viewport - rowLeft + CLEARANCE,
-          exit: -(rowRight + CLEARANCE),
-        };
+        return { enter: metrics.viewport - rowLeft + CLEARANCE, exit: -(rowRight + CLEARANCE) };
       })()
     : null;
+
+  const current = TESTIMONIALS[active];
 
   return (
     <section
@@ -131,24 +99,11 @@ export function TestimonialsSection() {
           viewport={VIEWPORT}
           transition={transition.enter}
         >
-          <span
-            aria-hidden
-            className="inline-block h-px w-8 bg-[color:var(--color-bg-accent)]"
-          />
+          <span aria-hidden className="inline-block h-px w-8 bg-[color:var(--color-bg-accent)]" />
           Clients
         </motion.p>
 
-        {/* The canvas. Fixed aspect from lg up so the panels keep their
-            arrangement; a plain column below that.
-
-            No `perspective` here on purpose: the panels sit far from the
-            perspective origin, so any depth on this container trapezoids them —
-            one edge taller than the other — and they stop reading as flat
-            panels. The tilt is Z-rotation only. */}
-        <div
-          ref={canvasRef}
-          className="mt-10 lg:relative lg:mt-6 lg:aspect-[19/12.5]"
-        >
+        <div ref={canvasRef} className="mt-10 lg:relative lg:mt-6 lg:aspect-[19/12.5]">
           <motion.h2
             className="clients-monument max-w-[16ch] lg:absolute lg:left-0 lg:top-[7%] lg:z-0 lg:max-w-none lg:w-[73%]"
             initial={{ opacity: 0, y: 28 }}
@@ -157,9 +112,7 @@ export function TestimonialsSection() {
             transition={{ ...transition.enter, delay: 0.1 }}
           >
             {MONUMENT.map((line) => (
-              <span key={line} className="block">
-                {line}
-              </span>
+              <span key={line} className="block">{line}</span>
             ))}
           </motion.h2>
 
@@ -175,7 +128,103 @@ export function TestimonialsSection() {
             walkthrough. Names are withheld under NDA; sectors and cities are not.
           </motion.p>
 
-          <div className="mt-12 flex flex-col gap-6 lg:mt-0 lg:block lg:gap-0">
+          {/* ── Mobile editorial slider (hidden on lg+) ─────────────────── */}
+          <motion.div
+            className="mt-12 lg:hidden"
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={VIEWPORT}
+            transition={{ ...transition.enter, delay: 0.15 }}
+          >
+            <div className="flex items-start gap-5">
+              {/* Large index number */}
+              <span
+                className="text-[80px] font-light leading-none select-none transition-all duration-500 text-[color:var(--color-fg)]/10"
+                style={{ fontVariantNumeric: "tabular-nums" }}
+              >
+                {String(active + 1).padStart(2, "0")}
+              </span>
+
+              <div className="flex-1 pt-3">
+                {/* Sector label */}
+                <p className="type-mono text-[color:var(--color-bg-accent)]">
+                  {current.sector}
+                </p>
+
+                {/* Quote */}
+                <blockquote
+                  className={`clients-quote mt-3 text-[1.15rem] leading-[1.65] transition-all duration-250 ${
+                    isTransitioning ? "opacity-0 translate-x-3" : "opacity-100 translate-x-0"
+                  }`}
+                >
+                  &ldquo;{current.quote}&rdquo;
+                </blockquote>
+
+                {/* Attribution */}
+                <div
+                  className={`mt-6 transition-all duration-250 delay-75 ${
+                    isTransitioning ? "opacity-0" : "opacity-100"
+                  }`}
+                >
+                  <p className="type-mono text-[color:var(--color-accent)]">
+                    {current.attribution}
+                  </p>
+                  <p className="type-mono mt-1 text-[color:color-mix(in_srgb,var(--color-accent)_50%,var(--color-bg))]">
+                    {current.city}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Navigation */}
+            <div className="mt-10 flex items-center justify-between border-t border-[color:var(--color-bg-accent)]/40 pt-6">
+              {/* Dot / line indicators + counter */}
+              <div className="flex items-center gap-5">
+                <div className="flex items-center gap-2">
+                  {TESTIMONIALS.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => handleChange(i)}
+                      aria-label={`Go to testimonial ${i + 1}`}
+                      className="group relative py-3"
+                    >
+                      <span
+                        className={`block h-px transition-all duration-500 ease-out ${
+                          i === active
+                            ? "w-10 bg-[color:var(--color-fg)]"
+                            : "w-5 bg-[color:var(--color-bg-accent)] group-hover:w-7"
+                        }`}
+                      />
+                    </button>
+                  ))}
+                </div>
+                <span className="type-mono text-[color:var(--color-bg-accent)]">
+                  {String(active + 1).padStart(2, "0")} / {String(TESTIMONIALS.length).padStart(2, "0")}
+                </span>
+              </div>
+
+              {/* Prev / Next */}
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={handlePrev}
+                  aria-label="Previous testimonial"
+                  className="flex h-9 w-9 items-center justify-center rounded-full text-[color:var(--color-bg-accent)] transition-colors duration-300 hover:text-[color:var(--color-fg)] hover:bg-[color:var(--color-bg-accent)]/10"
+                >
+                  <ChevronLeft size={18} />
+                </button>
+                <button
+                  onClick={handleNext}
+                  aria-label="Next testimonial"
+                  className="flex h-9 w-9 items-center justify-center rounded-full text-[color:var(--color-bg-accent)] transition-colors duration-300 hover:text-[color:var(--color-fg)] hover:bg-[color:var(--color-bg-accent)]/10"
+                >
+                  <ChevronRight size={18} />
+                </button>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* ── Desktop scattered panels (hidden on mobile) ─────────────── */}
+          <div className="hidden lg:mt-0 lg:block">
             {TESTIMONIALS.map((testimonial, index) => (
               <TestimonialPanel
                 key={testimonial.id}
@@ -193,3 +242,4 @@ export function TestimonialsSection() {
     </section>
   );
 }
+
