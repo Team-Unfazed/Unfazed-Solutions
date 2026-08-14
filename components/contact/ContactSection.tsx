@@ -8,8 +8,8 @@ import { transition, VIEWPORT } from "@/lib/animations";
 
 const DETAILS = [
   { label: "Email", value: SITE.email, href: `mailto:${SITE.email}` },
+  { label: "Phone", value: SITE.phone, href: `tel:${SITE.phone.replace(/\s/g, "")}` },
   { label: "Based in", value: SITE.location },
-  { label: "Team", value: "Five engineers, no subcontractors" },
 ];
 
 export function ContactSection() {

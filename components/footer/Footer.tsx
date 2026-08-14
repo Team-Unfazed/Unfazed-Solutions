@@ -16,8 +16,8 @@ const COLUMNS = [
     items: [
       { label: "Email", href: `mailto:${SITE.email}` },
       { label: "LinkedIn", href: "#" },
-      { label: "GitHub", href: "#" },
-      { label: "Instagram", href: "#" },
+      { label: "GitHub", href: "https://github.com/Team-Unfazed" },
+      { label: "Instagram", href: "https://www.instagram.com/unfazedsolutions/" },
     ],
   },
 ];

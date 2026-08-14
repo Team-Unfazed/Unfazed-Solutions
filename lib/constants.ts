@@ -12,11 +12,14 @@ export const SITE = {
   wordmark: "UNFAZED",
   suffix: "SOLUTION",
   email: "unfazedsolutions@gmail.com",
+  phone: "+91 7700085191",
   location: "Mumbai, India",
   /** Shown in the hero meta row. PLACEHOLDER — see CONTENT-TODO.md §8. */
   founded: "2026",
   /** Used by the loader and the footer mark. */
   logo: "/images/Unfazed Logo.png",
+  github: "https://github.com/Team-Unfazed",
+  instagram: "https://www.instagram.com/unfazedsolutions/",
 } as const;
 
 export const NAV_LINKS = [
