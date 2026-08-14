@@ -24,7 +24,16 @@ const COLUMNS = [
 
 export function Footer() {
   return (
-    <footer className="relative z-10 border-t border-[color:var(--color-bg-accent)]/50 pt-[clamp(4rem,8vw,7rem)]">
+    <footer className="relative z-10 border-t border-[color:var(--color-bg-accent)]/50 pt-[clamp(4rem,8vw,7rem)] overflow-hidden">
+      {/* Radial ambient glow — matches the site's achromatic palette */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 -z-10"
+        style={{
+          background:
+            "radial-gradient(125% 125% at 50% -10%, #0a0a0a 40%, #2a2a2a 100%)",
+        }}
+      />
       <div className="shell">
         <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-4">
           <motion.div
@@ -88,7 +97,7 @@ export function Footer() {
         <div className="mt-[clamp(4rem,9vw,8rem)] [perspective:900px] [perspective-origin:50%_100%]">
           <motion.p
             aria-hidden
-            className="wordmark text-[color:var(--color-fg)] [transform-style:preserve-3d]"
+            className="wordmark [transform-style:preserve-3d] [background:none] [-webkit-text-fill-color:var(--color-fg)] text-[color:var(--color-fg)] !text-[clamp(3.5rem,18vw,18rem)] !font-black"
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.35 }}
