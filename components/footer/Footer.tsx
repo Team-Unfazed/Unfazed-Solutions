@@ -97,7 +97,7 @@ export function Footer() {
         <div className="mt-[clamp(4rem,9vw,8rem)] [perspective:900px] [perspective-origin:50%_100%]">
           <motion.p
             aria-hidden
-            className="wordmark [transform-style:preserve-3d] [background:none] [-webkit-text-fill-color:var(--color-fg)] text-[color:var(--color-fg)] !text-[clamp(3.5rem,18vw,18rem)] !font-black"
+            className="wordmark [transform-style:preserve-3d] [background:none] [-webkit-text-fill-color:var(--color-fg)] text-[color:var(--color-fg)]"
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.35 }}
