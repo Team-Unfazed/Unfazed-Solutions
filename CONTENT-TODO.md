@@ -91,3 +91,66 @@ I took 2026 from the competition dates, which is the only year anything on the
 site is anchored to. If the studio started trading earlier, this understates it;
 if it has not started trading yet, it overstates it. Set the real year or drop
 the line.
+
+## 9. Selected Work — the twelve products
+
+`SELECTED_WORK` in `lib/constants.ts`. Names, categories and descriptions are
+yours, used verbatim; nothing was rewritten into marketing copy and no metric,
+rating or client was added that you did not supply.
+
+### Domains — checked, all live
+
+All eleven public URLs were requested on 3 September 2026 and every one
+returned `200`:
+
+| Card | Host stored | Title served |
+| --- | --- | --- |
+| Shoogle | `shoogle.in` | Shoogle — Turn Your Instagram Into a Premium Website |
+| Bencher | `bencher.in` | Bencher |
+| PranaShakti Clinic | `pranashakticlinic.com` | Prana Shakti Clinic - Integrative Homeopathy by Dr. Ashwini Raval |
+| KR Moondra & Co. | `www.krmoondra.com` | **Home \| My Site** — see below |
+| LeadPilot | `linkdnoutreach.vercel.app` | **OpenOutreach** — see below |
+| VahanReady | `vahanready.in` | VahanReady — Driving License Assistance in India |
+| Shooks | `shooks.online` | Shooks — Your AI Social Media Manager |
+| Serendrop | `serendrop.com` | Serendrop |
+| Signagewale | `www.signagewale.com` | Customizable Signboard Makers \| Signagewale |
+| Mumbai Darshan | `mumbaidarshan.com` | Mumbai Darshan Ultimate – Best Tour Packages |
+| NS Wellness | `www.nswellness.in` | NS Wellness Massage Therapy — Nerul, Navi Mumbai |
+
+Clinic Queue has no public URL by design and shows an "Internal tool" badge
+instead. The footer strip under the grid counts the linked ones off the data,
+so it stays right if that ever changes.
+
+Three hosts need their `www.` subdomain to resolve, so it is stored. The card
+strips the prefix for display only — the link still goes to the full host.
+
+### Two things to decide
+
+**LeadPilot is called OpenOutreach on its own site.** `linkdnoutreach.vercel.app`
+serves "OpenOutreach — AI SDR that finds and messages your ideal customers".
+The word "LeadPilot" appears nowhere on the live page. The card still says
+LeadPilot because that is the name you gave and renaming your own product is
+not mine to do — but a visitor clicking it lands on a different wordmark.
+Either rename the card, or ignore this if LeadPilot is the internal name.
+Two smaller notes on the same entry: the description says replies land on
+WhatsApp, which the live page does not mention, and a `vercel.app` subdomain
+reads as a demo beside ten custom domains.
+
+**KR Moondra's site has no title.** It serves `<title>Home | My Site</title>`
+and `og:site_name` of "My Site" — the Wix default was never set. The page
+itself is the real firm (121 mentions of Moondra). Nothing in this repo can fix
+that, but a card that calls it "a trust-first brand site" pointing at a page
+titled "My Site" is worth twenty minutes in their site settings before launch.
+
+### The previews are not screenshots
+
+There are no images of these twelve products in `public/`, so each card draws an
+abstract composition — a sidebar and a hero, a token board, a tile grid — chosen
+by the `preview` field. This is deliberate: a stock mockup on a page that also
+makes checkable claims about a competition win reads as your work. See §5a, and
+the `band-ai.png` incident, for why that matters here.
+
+If you shoot real screenshots, swap the `<WorkPreview>` call in
+`components/work/WorkCard.tsx` for a `next/image` with `loading="lazy"` at the
+same 16:9 box, and keep `ACCENT_TINT` for the hover resolve or drop it with the
+composition.

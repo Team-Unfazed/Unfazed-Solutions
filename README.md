@@ -1,8 +1,10 @@
 # Unfazed Solution — agency site
 
 A single-page marketing site for the Unfazed Solution software studio. Dark,
-typography-led, monochrome by design: the only colour anywhere on the page is
-inside the logo mark and in the award photograph when you engage with it.
+typography-led, monochrome by design: colour appears in the logo mark, and
+everywhere else only once the reader engages with something — the award
+photograph resolves out of grayscale on hover, and a Selected Work card lets
+that product's own brand colour through its preview. At rest the page is grey.
 
 ## Run it
 
@@ -48,13 +50,14 @@ components/
   marquee/             the capability band between hero and services
   services/            3D coverflow track, card, glyph set
   credibility/         stats, award panels, Lumos AI case modal
+  work/                the twelve shipped products, 3D scroll reveal, previews
   founders/            five-panel accordion
   testimonials/        quote carousel
   contact/             scrub-linked headline and details
   footer/              link columns and the closing wordmark
   shared/              Button, SectionHeading, Reveal, ScrollTextReveal, SmoothScroll
 lib/
-  constants.ts         all site content — services, founders, stats, awards, quotes
+  constants.ts         all site content — services, work, founders, stats, awards, quotes
   animations.ts        the easing family and shared motion variants
   types.ts             content types
   smooth-scroll.ts     the Lenis handle, anchor scrolling, scroll lock
@@ -78,6 +81,12 @@ Tokens are declared once, in `app/globals.css`:
 | `--color-accent` | `#D0D0D0` | Body copy, highlights |
 | `--color-bg-accent` | `#434343` | Rules, borders, muted meta |
 
+The one set of chromatic values in the codebase is `ACCENT_TINT` in
+`components/work/WorkPreview.tsx` — a brand colour per shipped product. It is
+deliberately *not* in `@theme`: promoting a dozen hues to tokens would put them
+within reach of every component, and they are only ever painted inside a work
+card's preview, at zero opacity until that card is hovered or focused.
+
 Type is one superfamily used at two extremes of its width axis — Archivo at
 `wdth 125` for display and `wdth 100` for body — with JetBrains Mono for
 eyebrows, labels and data.
@@ -93,9 +102,12 @@ Tailwind text-colour utility placed on a button.
   frame, and it returns early when the section is off screen.
 - The hero canvas sets `frameloop="never"` once the hero leaves the viewport,
   so the GPU is idle for the rest of the page.
+- Each Selected Work card mounts its scroll-linked transforms only once it is
+  within 200px of the viewport, so twelve cards are never all measured at once,
+  and the hover tilt is never wired up on a touch pointer.
 - Both respect `prefers-reduced-motion`: Lenis is not started, the carousel
-  becomes a scroll-snapping row, the grain and marquee stop, and the counters
-  print their final figure.
+  becomes a scroll-snapping row, the grain and marquee stop, the counters print
+  their final figure, and the work cards fade and rise flat with no perspective.
 
 ## Content that still needs you
 

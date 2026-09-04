@@ -4,6 +4,7 @@ import { HeroSection } from "@/components/hero/HeroSection";
 import { ServicesSection } from "@/components/services/ServicesSection";
 import { CapabilityMarquee } from "@/components/marquee/CapabilityMarquee";
 import { CredibilitySection } from "@/components/credibility/CredibilitySection";
+import { WorkSection } from "@/components/work/WorkSection";
 import { FoundersSection } from "@/components/founders/FoundersSection";
 import { TestimonialsSection } from "@/components/testimonials/TestimonialsSection";
 import { ContactSection } from "@/components/contact/ContactSection";
@@ -18,6 +19,7 @@ export default function HomePage() {
         <CapabilityMarquee />
         <ServicesSection />
         <CredibilitySection />
+        <WorkSection />
         <FoundersSection />
         <TestimonialsSection />
         <ContactSection />

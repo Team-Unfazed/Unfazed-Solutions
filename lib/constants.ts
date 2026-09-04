@@ -5,6 +5,7 @@ import type {
   Service,
   Stat,
   Testimonial,
+  WorkItem,
 } from "./types";
 
 export const SITE = {
@@ -25,6 +26,7 @@ export const SITE = {
 export const NAV_LINKS = [
   { label: "Capabilities", href: "#capabilities" },
   { label: "Record", href: "#record" },
+  { label: "Work", href: "#work" },
   { label: "Team", href: "#team" },
   { label: "Contact", href: "#contact" },
 ] as const;
@@ -210,6 +212,143 @@ export const CASE_STUDIES: Record<string, CaseStudy> = {
       "https://etedge-insights.com/trending/openai-academy-x-nxtwave-buildathon-maharashtra-team-wins-indias-largest-genai-student-challenge-at-india-ai-impact-summit-2026/",
   },
 };
+
+/* --------------------------------------------------------------------------
+   Selected work. Twelve products that are built, deployed and — apart from the
+   one internal system — reachable from this page.
+
+   Descriptions are the client's own framing of what the product does. Nothing
+   here claims a result, a figure or a rating that is not on the product itself.
+
+   `domain` is null only for Clinic Queue, which has no public URL by design.
+   Hosts are stored exactly as they resolve — three of them need their `www.`
+   subdomain — and the card strips that prefix for display only.
+   -------------------------------------------------------------------------- */
+
+export const SELECTED_WORK: WorkItem[] = [
+  {
+    id: "shoogle",
+    name: "Shoogle",
+    category: "AI website builder",
+    description:
+      "Turn your Instagram into a premium, mobile-first website in seconds. AI writes the copy and ships it live.",
+    domain: "shoogle.in",
+    accent: "pink-to-orange gradient",
+    image: "/work/shoogle.png",
+    imagePosition: "50% 100%",
+  },
+  {
+    id: "bencher",
+    name: "Bencher",
+    category: "Campus marketplace",
+    description:
+      "Digital campus space — connect with your college community. By students, for students.",
+    domain: "bencher.in",
+    accent: "teal",
+    image: "/work/bencher.png",
+  },
+  {
+    id: "pranashakti",
+    name: "PranaShakti Clinic",
+    category: "Healthcare",
+    description:
+      "Homeopathic care with online consults, appointments, and medicine delivery.",
+    domain: "pranashakticlinic.com",
+    accent: "rose",
+    image: "/work/pranashakti-clinic.png",
+  },
+  {
+    id: "clinic-queue",
+    name: "Clinic Queue",
+    category: "SaaS · Ops",
+    description:
+      "Real-time token orchestration — token boards, staff workflows, calmer waits.",
+    domain: null,
+    note: "Internal tool",
+    accent: "cyan",
+    image: "/work/clinic-queue.png",
+  },
+  {
+    id: "kr-moondra",
+    name: "KR Moondra & Co.",
+    category: "Brand site",
+    description:
+      "Chartered accountancy firm — a trust-first brand site for a 30-year-old practice. Est. 1994, 30+ years, 500+ clients.",
+    domain: "www.krmoondra.com",
+    accent: "amber",
+    image: "/work/kr-moondra.png",
+  },
+  {
+    id: "leadpilot",
+    name: "LeadPilot",
+    category: "AI · SaaS",
+    description:
+      "AI sales rep — discovers ICP on LinkedIn, qualifies, and opens conversations. Replies land on WhatsApp.",
+    domain: "linkdnoutreach.vercel.app",
+    accent: "indigo",
+    image: "/work/leadpilot.png",
+  },
+  {
+    id: "vahanready",
+    name: "VahanReady",
+    category: "Service / WhatsApp",
+    description:
+      "Hassle-free Indian driving license assistance — learner's, permanent, renewals and IDP handled over WhatsApp.",
+    domain: "vahanready.in",
+    accent: "orange",
+    image: "/work/vahanready.png",
+  },
+  {
+    id: "shooks",
+    name: "Shooks",
+    category: "AI · SaaS",
+    description:
+      "AI-native carousel engine — a topic in, an 8-slide Instagram/LinkedIn carousel out.",
+    domain: "shooks.online",
+    accent: "purple-to-orange gradient",
+    image: "/work/shooks.png",
+  },
+  {
+    id: "serendrop",
+    name: "Serendrop",
+    category: "E-commerce",
+    description:
+      "A curated Shopify storefront for lifestyle and everyday essentials — built for calm browsing and smooth checkout.",
+    domain: "serendrop.com",
+    accent: "teal/pink/orange product swatches",
+    image: "/work/serendrop.png",
+  },
+  {
+    id: "signagewale",
+    name: "Signagewale",
+    category: "Brand site",
+    description:
+      "Premium custom signage boards — stainless steel, acrylic and LED glow sign fabrication for brands and storefronts.",
+    domain: "www.signagewale.com",
+    accent: "teal/purple/orange",
+    image: "/work/signagewale.png",
+  },
+  {
+    id: "mumbai-darshan",
+    name: "Mumbai Darshan",
+    category: "Travel / Booking",
+    description:
+      "Explore Mumbai's top attractions and heritage landmarks with AC bus tours, meals and entry tickets included.",
+    domain: "mumbaidarshan.com",
+    accent: "blue",
+    image: "/work/mumbai-darshan.png",
+  },
+  {
+    id: "ns-wellness",
+    name: "NS Wellness",
+    category: "Healthcare / Booking",
+    description:
+      "Massage therapy center in Nerul, Navi Mumbai — Swedish, deep tissue, sciatica and reflexology treatments with online booking. 5.0 rating, 31 reviews.",
+    domain: "www.nswellness.in",
+    accent: "green",
+    image: "/work/ns-wellness.png",
+  },
+];
 
 /* --------------------------------------------------------------------------
    Founders, in the exact display order requested.

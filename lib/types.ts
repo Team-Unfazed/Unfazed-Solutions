@@ -85,3 +85,36 @@ export interface Testimonial {
   sector: string;
   city: string;
 }
+
+export interface WorkItem {
+  id: string;
+  name: string;
+  /** Sector or discipline. Set in mono above the name. */
+  category: string;
+  /** One factual line. What the product is — not what it was worth. */
+  description: string;
+  /**
+   * The live domain, written without a scheme. `null` where there is nothing
+   * public to point at: an internal system, or a domain not yet confirmed.
+   */
+  domain: string | null;
+  /** Stands in for the domain when there is none. Required when `domain` is null. */
+  note?: string;
+  /**
+   * The product's own colour, in the words the brief used. Kept as the record
+   * of the brief rather than as a token: the poster below carries the colour
+   * itself now, so nothing reads this to draw with.
+   */
+  accent: string;
+  /**
+   * The product's poster, served from /public/work. Landscape, and cropped to
+   * the card's 16/9 frame by `WorkPreview`.
+   */
+  image: string;
+  /**
+   * `object-position` for that poster, set only where a centred crop would
+   * take something the artwork needs. Eleven of the twelve are 11:6 and give
+   * up 1.5% off each side, which is inside every one of their margins.
+   */
+  imagePosition?: string;
+}
