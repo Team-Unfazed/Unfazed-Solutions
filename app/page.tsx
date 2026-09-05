@@ -1,4 +1,5 @@
 import { IntroProvider } from "@/components/loader/IntroContext";
+import { EnquiryProvider } from "@/components/contact/EnquiryContext";
 import { FloatingNav } from "@/components/nav/FloatingNav";
 import { HeroSection } from "@/components/hero/HeroSection";
 import { ServicesSection } from "@/components/services/ServicesSection";
@@ -13,18 +14,20 @@ import { Footer } from "@/components/footer/Footer";
 export default function HomePage() {
   return (
     <IntroProvider>
-      <FloatingNav />
-      <main id="top">
-        <HeroSection />
-        <CapabilityMarquee />
-        <ServicesSection />
-        <CredibilitySection />
-        <WorkSection />
-        <FoundersSection />
-        <TestimonialsSection />
-        <ContactSection />
-      </main>
-      <Footer />
+      <EnquiryProvider>
+        <FloatingNav />
+        <main id="top">
+          <HeroSection />
+          <CapabilityMarquee />
+          <ServicesSection />
+          <CredibilitySection />
+          <WorkSection />
+          <FoundersSection />
+          <TestimonialsSection />
+          <ContactSection />
+        </main>
+        <Footer />
+      </EnquiryProvider>
     </IntroProvider>
   );
 }

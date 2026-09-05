@@ -12,6 +12,7 @@ import { EASE, transition } from "@/lib/animations";
 import { NAV_LINKS, SITE } from "@/lib/constants";
 import { scrollToSection } from "@/lib/smooth-scroll";
 import { useIntro } from "@/components/loader/IntroContext";
+import { useEnquiry } from "@/components/contact/EnquiryContext";
 
 /**
  * Floating pill navigation. It retreats when the reader is moving down the
@@ -25,6 +26,7 @@ import { useIntro } from "@/components/loader/IntroContext";
  */
 export function FloatingNav() {
   const { ready } = useIntro();
+  const enquiry = useEnquiry();
   const { scrollY } = useScroll();
   const [hidden, setHidden] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -96,7 +98,11 @@ export function FloatingNav() {
           </ul>
 
           <button
-            onClick={() => go("#contact")}
+            onClick={() => {
+              setMenuOpen(false);
+              enquiry.open();
+            }}
+            aria-haspopup="dialog"
             className="ml-auto shrink-0 rounded-full bg-[color:var(--color-cta)] px-4 py-2.5 font-mono text-[0.6875rem] uppercase tracking-[0.16em] text-[color:var(--color-cta-fg)] transition-opacity duration-300 hover:opacity-85 md:ml-1"
           >
             Start a project

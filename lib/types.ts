@@ -118,3 +118,18 @@ export interface WorkItem {
    */
   imagePosition?: string;
 }
+
+/**
+ * What the project brief collects before it is handed to WhatsApp. Everything
+ * is a string so the form state and the composed message stay in step; the
+ * optional answers carry an empty string rather than being absent.
+ */
+export interface Enquiry {
+  name: string;
+  email: string;
+  /** Names of the disciplines the visitor ticked. May be empty. */
+  disciplines: string[];
+  budget: string;
+  timeline: string;
+  brief: string;
+}

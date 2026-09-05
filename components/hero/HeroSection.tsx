@@ -12,6 +12,7 @@ import {
 } from "framer-motion";
 import { ArrowGlyph, Button } from "@/components/shared/Button";
 import { useIntro } from "@/components/loader/IntroContext";
+import { useEnquiry } from "@/components/contact/EnquiryContext";
 import { scrollToSection } from "@/lib/smooth-scroll";
 import { EASE } from "@/lib/animations";
 import { SITE } from "@/lib/constants";
@@ -45,6 +46,7 @@ const FACTS = [
  */
 export function HeroSection() {
   const { ready } = useIntro();
+  const enquiry = useEnquiry();
   const sectionRef = useRef<HTMLElement>(null);
   const rowRef = useRef<HTMLSpanElement>(null);
   const reduceMotion = useReducedMotion();
@@ -231,8 +233,8 @@ export function HeroSection() {
           >
             <Button
               size="lg"
-              onClick={() => scrollToSection("contact")}
-              aria-label="Start a project — jump to the contact section"
+              onClick={enquiry.open}
+              aria-haspopup="dialog"
             >
               Start a project
               <ArrowGlyph />

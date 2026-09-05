@@ -2,7 +2,8 @@
 
 import { motion } from "framer-motion";
 import { ScrollTextReveal } from "@/components/shared/ScrollTextReveal";
-import { LinkButton, ArrowGlyph } from "@/components/shared/Button";
+import { Button, LinkButton, ArrowGlyph } from "@/components/shared/Button";
+import { useEnquiry } from "@/components/contact/EnquiryContext";
 import { SERVICES, SITE } from "@/lib/constants";
 import { transition, VIEWPORT } from "@/lib/animations";
 
@@ -13,6 +14,8 @@ const DETAILS = [
 ];
 
 export function ContactSection() {
+  const enquiry = useEnquiry();
+
   return (
     <section id="contact" className="relative z-10 py-[var(--spacing-section)]">
       <div className="shell">
@@ -39,13 +42,10 @@ export function ContactSection() {
           viewport={VIEWPORT}
           transition={transition.enter}
         >
-          <LinkButton
-            size="lg"
-            href={`mailto:${SITE.email}?subject=Project%20enquiry`}
-          >
+          <Button size="lg" onClick={enquiry.open} aria-haspopup="dialog">
             Start a project
             <ArrowGlyph />
-          </LinkButton>
+          </Button>
           <LinkButton variant="secondary" size="lg" href={`mailto:${SITE.email}`}>
             {SITE.email}
           </LinkButton>

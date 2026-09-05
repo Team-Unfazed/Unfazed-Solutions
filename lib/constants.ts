@@ -14,6 +14,8 @@ export const SITE = {
   suffix: "SOLUTION",
   email: "support@unfazedsolutions.online",
   phone: "+91 7700085191",
+  /** The same number, digits only with the country code — the shape wa.me wants. */
+  whatsapp: "917700085191",
   location: "Mumbai, India",
   /** Shown in the hero meta row. PLACEHOLDER — see CONTENT-TODO.md §8. */
   founded: "2026",
@@ -29,6 +31,27 @@ export const NAV_LINKS = [
   { label: "Work", href: "#work" },
   { label: "Team", href: "#team" },
   { label: "Contact", href: "#contact" },
+] as const;
+
+/* --------------------------------------------------------------------------
+   Project brief. The two questions worth asking before a first call, kept as
+   ranges so nobody has to commit to a number to start the conversation. Both
+   are optional in the form; "Not sure yet" is a real answer.
+   -------------------------------------------------------------------------- */
+
+export const ENQUIRY_BUDGETS = [
+  "Under ₹1L",
+  "₹1L – ₹5L",
+  "₹5L – ₹15L",
+  "₹15L+",
+  "Not sure yet",
+] as const;
+
+export const ENQUIRY_TIMELINES = [
+  "ASAP",
+  "1 – 3 months",
+  "3 – 6 months",
+  "Exploring",
 ] as const;
 
 /* --------------------------------------------------------------------------
