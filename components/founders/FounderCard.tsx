@@ -63,7 +63,7 @@ export function FounderCard({
               nothing but hair. */}
           <Image
             src={founder.image}
-            alt=""
+            alt={`Portrait of ${founder.name}, ${founder.role}`}
             fill
             priority={priority}
             sizes="(max-width: 768px) 100vw, 45vw"

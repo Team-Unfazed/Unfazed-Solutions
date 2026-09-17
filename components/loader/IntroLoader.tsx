@@ -96,6 +96,9 @@ export function IntroLoader({ onDone }: { onDone: () => void }) {
       {visible ? (
         <motion.div
           key="intro"
+          // The panel is server-rendered and only JavaScript can lift it, so
+          // the no-JavaScript stylesheet in app/layout.tsx removes it by this.
+          data-intro-loader
           className="fixed inset-0 z-[90] flex flex-col items-center justify-center bg-[color:var(--color-bg)]"
           // Receding rather than wiping: the panel gives way to the page
           // instead of being pulled off it.

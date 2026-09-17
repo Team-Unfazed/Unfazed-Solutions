@@ -20,6 +20,9 @@ export function CredibilitySection() {
   const closeCase = useCallback(() => setStudy(null), []);
 
   const [featured, ...rest] = AWARDS;
+  const featuredStudy = featured.caseStudyId
+    ? CASE_STUDIES[featured.caseStudyId]
+    : undefined;
 
   return (
     <section id="record" className="relative z-10 py-[var(--spacing-section)]">
@@ -68,7 +71,12 @@ export function CredibilitySection() {
               award={featured}
               featured
               onOpen={openCase}
-              priority
+              source={
+                featuredStudy && {
+                  label: featuredStudy.sourceLabel,
+                  url: featuredStudy.sourceUrl,
+                }
+              }
             />
           </div>
           <div className="flex flex-col gap-16 lg:col-span-4">

@@ -4,6 +4,13 @@ Everything below is in `lib/constants.ts` unless stated otherwise.
 
 ## 1. Testimonials — written by me, not by clients
 
+> **Status (17 Sep 2026): the section is off the page.** `<TestimonialsSection />`
+> is no longer rendered in `app/page.tsx`, so none of the quotes below are
+> published. The component and the `TESTIMONIALS` data are untouched — put the
+> section back once the quotes are real, attributed and permissioned. Do not add
+> `Review` / `AggregateRating` structured data for anything that is not a
+> genuine client review.
+
 `TESTIMONIALS` contains four quotes I wrote. They are attributed by role and
 sector ("Founder — D2C skincare brand, Mumbai") rather than to named people, so
 nothing on the page claims a specific person said something they did not. They
@@ -40,8 +47,9 @@ claimed. Have each founder read their own paragraph and correct it.
 
 ## 4. Social links
 
-`components/footer/Footer.tsx` — the LinkedIn, GitHub and Instagram entries
-point at `#`. Add the real URLs or remove the rows.
+`components/footer/Footer.tsx` — GitHub and Instagram are real. **LinkedIn still
+points at `#`.** Create the company page and add the URL (then add it to
+`sameAs` in `lib/schema.ts` too), or remove the row.
 
 ## 5. Hero copy
 
@@ -78,10 +86,12 @@ The site does not name the competition roster anywhere, so there is no conflict
 on the page as it stands. If you want to name who competed, add it explicitly —
 otherwise a visitor who reads the linked article may notice the difference.
 
-## 7. Domain
+## 7. Domain — done
 
-`app/layout.tsx` — `metadataBase` is set to `https://unfazedsolution.com`. Point
-it at the real domain before deploying, or Open Graph URLs will be wrong.
+`SITE.url` in `lib/constants.ts` is `https://unfazedsolutions.online`, and
+`metadataBase`, the canonical, `sitemap.xml`, `robots.txt` and the JSON-LD all
+read it. The studio's name is "Unfazed Solutions" (plural, matching the domain)
+everywhere it appears.
 
 ## 8. "Building since 2026"
 

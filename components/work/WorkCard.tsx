@@ -56,7 +56,9 @@ export function WorkCard({ item, column }: WorkCardProps) {
       {!armed ? (
         // Pre-arm. Holds the card's footprint so the grid never reflows, and
         // holds its opening state so nothing flashes in when it arms.
-        <div className="h-full opacity-0">
+        // Only JavaScript arms a card, so the no-JavaScript stylesheet in
+        // app/layout.tsx shows this shell as it stands.
+        <div data-prearm className="h-full opacity-0">
           <CardBody item={item} />
         </div>
       ) : reduceMotion ? (

@@ -9,9 +9,11 @@ import type {
 } from "./types";
 
 export const SITE = {
-  name: "Unfazed Solution",
+  name: "Unfazed Solutions",
+  /** The production origin. Canonical, sitemap, robots and JSON-LD all read it. */
+  url: "https://unfazedsolutions.online",
   wordmark: "UNFAZED",
-  suffix: "SOLUTION",
+  suffix: "SOLUTIONS",
   email: "support@unfazedsolutions.online",
   phone: "+91 7700085191",
   /** The same number, digits only with the country code — the shape wa.me wants. */

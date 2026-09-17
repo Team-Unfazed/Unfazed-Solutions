@@ -13,6 +13,26 @@ const nextConfig: NextConfig = {
   },
   // three.js ships untranspiled ESM examples; let Next handle them.
   transpilePackages: ["three"],
+  // The baseline set that cannot change how the page behaves. A
+  // Content-Security-Policy is deliberately not here: the hero is WebGL and
+  // Next inlines its own scripts, so a policy needs writing and testing
+  // against the live site rather than guessing at.
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "X-Frame-Options", value: "SAMEORIGIN" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          {
+            key: "Permissions-Policy",
+            value: "camera=(), microphone=(), geolocation=()",
+          },
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;
