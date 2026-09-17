@@ -85,7 +85,7 @@ export function FoundersSection() {
                   {/* Full-card portrait */}
                   <Image
                     src={founder.image}
-                    alt={founder.name}
+                    alt={`Portrait of ${founder.name}, ${founder.role}`}
                     fill
                     sizes="100vw"
                     className="object-cover object-[50%_18%] grayscale contrast-[1.06] brightness-[0.95] transition-transform duration-700 ease-[cubic-bezier(0.22,0.61,0.36,1)] group-hover:scale-105"
@@ -188,7 +188,7 @@ export function FoundersSection() {
           viewport={VIEWPORT}
           transition={transition.enter}
         >
-          {FOUNDERS.map((founder, index) => (
+          {FOUNDERS.map((founder) => (
             <FounderCard
               key={founder.id}
               founder={founder}
@@ -197,7 +197,6 @@ export function FoundersSection() {
               hovered={hoveredId === founder.id && openId === null}
               onToggle={toggle}
               onHover={setHoveredId}
-              priority={index < 2}
             />
           ))}
         </motion.ul>

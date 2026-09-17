@@ -9,6 +9,8 @@ import {
   useScroll,
   useTransform,
   type MotionValue,
+  type TargetAndTransition,
+  type Transition,
 } from "framer-motion";
 import { ArrowGlyph, Button } from "@/components/shared/Button";
 import { useIntro } from "@/components/loader/IntroContext";
@@ -119,6 +121,22 @@ export function HeroSection() {
 
   const delay = ready ? 0 : 0.1;
 
+  // The markup ships in its finished state — the server renders the headline,
+  // the standfirst and the calls to action visible, so the page reads without
+  // JavaScript and paints its largest element on the first frame. The entrance
+  // is wound back on the client, underneath the loader's opaque panel where the
+  // rewind cannot be seen, and then played exactly as before once it clears.
+  const held = mounted && !ready;
+  const entrance = (
+    from: TargetAndTransition,
+    to: TargetAndTransition,
+    play: Transition,
+  ) => ({
+    initial: false as const,
+    animate: held ? from : to,
+    transition: held ? { duration: 0 } : play,
+  });
+
   return (
     <section
       ref={sectionRef}
@@ -146,9 +164,11 @@ export function HeroSection() {
       >
         <motion.div
           className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4"
-          initial={{ opacity: 0 }}
-          animate={ready ? { opacity: 1 } : {}}
-          transition={{ duration: 1, ease: EASE.outExpo, delay }}
+          {...entrance(
+            { opacity: 0 },
+            { opacity: 1 },
+            { duration: 1, ease: EASE.outExpo, delay },
+          )}
         >
           <p className="type-mono text-[color:var(--color-bg-accent)]">
             Software studio — {SITE.location}
@@ -159,9 +179,11 @@ export function HeroSection() {
         </motion.div>
         <motion.hr
           className="hairline mt-4 origin-left"
-          initial={{ scaleX: 0 }}
-          animate={ready ? { scaleX: 1 } : {}}
-          transition={{ duration: 1.3, ease: EASE.outExpo, delay: delay + 0.1 }}
+          {...entrance(
+            { scaleX: 0 },
+            { scaleX: 1 },
+            { duration: 1.3, ease: EASE.outExpo, delay: delay + 0.1 },
+          )}
         />
       </motion.div>
 
@@ -183,7 +205,7 @@ export function HeroSection() {
                 offset={CENTRE - i}
                 gap={motionOn ? gap : 0}
                 progress={p}
-                ready={ready}
+                held={held}
                 delay={delay + 0.18 + i * 0.055}
               />
             ))}
@@ -196,9 +218,11 @@ export function HeroSection() {
           >
             <motion.span
               className="inline-block"
-              initial={{ opacity: 0 }}
-              animate={ready ? { opacity: 1 } : {}}
-              transition={{ duration: 1, ease: EASE.outExpo, delay: delay + 0.62 }}
+              {...entrance(
+                { opacity: 0 },
+                { opacity: 1 },
+                { duration: 1, ease: EASE.outExpo, delay: delay + 0.62 },
+              )}
             >
               {SITE.suffix}
             </motion.span>
@@ -215,9 +239,11 @@ export function HeroSection() {
         <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
           <motion.p
             className="type-body max-w-[34ch] text-[clamp(1rem,1.3vw,1.2rem)]"
-            initial={{ opacity: 0, y: 20 }}
-            animate={ready ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.9, ease: EASE.outExpo, delay: delay + 0.5 }}
+            {...entrance(
+              { opacity: 0, y: 20 },
+              { opacity: 1, y: 0 },
+              { duration: 0.9, ease: EASE.outExpo, delay: delay + 0.5 },
+            )}
           >
             <span className="text-[color:var(--color-fg)]">
               Deadlines move. Scope grows. Models change.
@@ -227,9 +253,11 @@ export function HeroSection() {
 
           <motion.div
             className="flex flex-wrap items-center gap-2.5 sm:gap-3"
-            initial={{ opacity: 0, y: 20 }}
-            animate={ready ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.9, ease: EASE.outExpo, delay: delay + 0.58 }}
+            {...entrance(
+              { opacity: 0, y: 20 },
+              { opacity: 1, y: 0 },
+              { duration: 0.9, ease: EASE.outExpo, delay: delay + 0.58 },
+            )}
           >
             <Button
               size="lg"
@@ -251,9 +279,11 @@ export function HeroSection() {
 
         <motion.div
           className="mt-8 sm:mt-10"
-          initial={{ opacity: 0 }}
-          animate={ready ? { opacity: 1 } : {}}
-          transition={{ duration: 1, ease: EASE.outExpo, delay: delay + 0.68 }}
+          {...entrance(
+            { opacity: 0 },
+            { opacity: 1 },
+            { duration: 1, ease: EASE.outExpo, delay: delay + 0.68 },
+          )}
         >
           <hr className="hairline" />
           <dl className="flex flex-wrap items-center gap-x-6 gap-y-2 pt-4 sm:gap-x-8 sm:gap-y-3">
@@ -298,14 +328,15 @@ function Letter({
   offset,
   gap,
   progress,
-  ready,
+  held,
   delay,
 }: {
   char: string;
   offset: number;
   gap: number;
   progress: MotionValue<number>;
-  ready: boolean;
+  /** True while the entrance is wound back under the loader. */
+  held: boolean;
   delay: number;
 }) {
   // Resolved early: the brace is over before the page starts moving through
@@ -318,9 +349,11 @@ function Letter({
       <span className="block overflow-hidden pb-[0.08em]">
         <motion.span
           className="block"
-          initial={{ y: "115%" }}
-          animate={ready ? { y: "0%" } : {}}
-          transition={{ duration: 1.25, ease: EASE.outExpo, delay }}
+          initial={false}
+          animate={{ y: held ? "115%" : "0%" }}
+          transition={
+            held ? { duration: 0 } : { duration: 1.25, ease: EASE.outExpo, delay }
+          }
         >
           {char}
         </motion.span>

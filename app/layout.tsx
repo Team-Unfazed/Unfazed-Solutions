@@ -3,6 +3,7 @@ import { Archivo, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { SmoothScroll } from "@/components/shared/SmoothScroll";
 import { SITE } from "@/lib/constants";
+import { SITE_DESCRIPTION, siteJsonLd } from "@/lib/schema";
 
 /**
  * One superfamily, used at two extremes of its width axis: Archivo pushed wide
@@ -23,14 +24,23 @@ const jetbrains = JetBrains_Mono({
   variable: "--font-jetbrains",
 });
 
+const NO_SCRIPT_CSS = `
+[data-intro-loader]{display:none!important}
+[style*="opacity:0"]{opacity:1!important;transform:none!important}
+[data-prearm]{opacity:1!important}
+[data-reveal-line],[style*="scaleX(0)"]{transform:none!important}
+`;
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://unfazedsolution.com"),
+  metadataBase: new URL(SITE.url),
   title: {
-    default: "Unfazed Solution — Software studio, Mumbai",
-    template: "%s — Unfazed Solution",
+    default: `${SITE.name} — Software studio, Mumbai`,
+    template: `%s — ${SITE.name}`,
   },
-  description:
-    "A software studio in Mumbai. SaaS, AI agents, automation and deployed products — built by the team that won India's largest GenAI student challenge.",
+  description: SITE_DESCRIPTION,
+  applicationName: SITE.name,
+  // The canonical is set per route (see app/page.tsx), not here: metadata in
+  // the root layout is inherited, and every page would otherwise claim "/".
   keywords: [
     "software agency India",
     "AI automation",
@@ -39,11 +49,18 @@ export const metadata: Metadata = {
     "Next.js studio Mumbai",
   ],
   openGraph: {
-    title: "Unfazed Solution — Software studio, Mumbai",
-    description:
-      "Deadlines move. Scope grows. Models change. The build ships anyway.",
+    title: `${SITE.name} — Software studio, Mumbai`,
+    description: SITE_DESCRIPTION,
     type: "website",
+    url: "/",
     siteName: SITE.name,
+    locale: "en_IN",
+  },
+  // The image for both cards comes from app/opengraph-image.tsx.
+  twitter: {
+    card: "summary_large_image",
+    title: `${SITE.name} — Software studio, Mumbai`,
+    description: SITE_DESCRIPTION,
   },
   robots: { index: true, follow: true },
 };
@@ -60,12 +77,27 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${archivo.variable} ${jetbrains.variable}`}>
+      <head>
+        {/* Every entrance on the page starts from an inline hidden state that
+            JavaScript resolves. Without JavaScript nothing would ever resolve
+            them, so this puts the page in its finished state instead. */}
+        <noscript>
+          <style>{NO_SCRIPT_CSS}</style>
+        </noscript>
+      </head>
       <body>
+        <script
+          type="application/ld+json"
+          // "<" is escaped so no string in the data can close the script tag.
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(siteJsonLd()).replace(/</g, "\\u003c"),
+          }}
+        />
         <SmoothScroll />
         <div className="page-rules" aria-hidden />
         <div className="grain" aria-hidden />
         <a
-          href="#capabilities"
+          href="#content"
           className="type-mono sr-only focus:not-sr-only focus:fixed focus:left-6 focus:top-6 focus:z-[100] focus:rounded-full focus:bg-[color:var(--color-cta)] focus:px-5 focus:py-3 focus:text-[color:var(--color-cta-fg)]"
         >
           Skip to content

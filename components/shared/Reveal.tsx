@@ -65,6 +65,9 @@ export function MaskedLine({ children, className, delay = 0 }: MaskedLineProps) 
   return (
     <span ref={clipRef} className="block overflow-hidden pb-[0.12em]">
       <motion.span
+        // Lets the no-JavaScript stylesheet in app/layout.tsx drop the line
+        // into place; nothing else would ever slide it out from the clip.
+        data-reveal-line
         className={`block ${className ?? ""}`}
         initial={{ y: "110%" }}
         animate={{ y: inView ? "0%" : "110%" }}

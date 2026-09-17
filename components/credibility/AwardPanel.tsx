@@ -10,6 +10,8 @@ interface AwardPanelProps {
   award: Award;
   featured?: boolean;
   onOpen?: (caseStudyId: string) => void;
+  /** Third-party coverage of the win, linked in the open under the panel. */
+  source?: { label: string; url: string };
   priority?: boolean;
 }
 
@@ -22,6 +24,7 @@ export function AwardPanel({
   award,
   featured = false,
   onOpen,
+  source,
   priority = false,
 }: AwardPanelProps) {
   const interactive = Boolean(award.caseStudyId && onOpen);
@@ -92,17 +95,44 @@ export function AwardPanel({
       className="group"
     >
       {interactive ? (
-        <button
-          type="button"
-          onClick={() => onOpen?.(award.caseStudyId as string)}
+        // A real link to the case study's own page, which the click upgrades
+        // into the modal. A crawler, a reader without JavaScript, and anyone
+        // opening it in a new tab all reach the same content at a URL.
+        <a
+          href={`/work/${award.caseStudyId}`}
+          onClick={(event) => {
+            if (
+              event.button !== 0 ||
+              event.metaKey ||
+              event.ctrlKey ||
+              event.shiftKey ||
+              event.altKey
+            )
+              return;
+            event.preventDefault();
+            onOpen?.(award.caseStudyId as string);
+          }}
+          aria-haspopup="dialog"
           className="block w-full cursor-pointer text-left"
           aria-label={`${award.placement}, ${award.event}. Open the case study.`}
         >
           {body}
-        </button>
+        </a>
       ) : (
         body
       )}
+
+      {source ? (
+        <a
+          href={source.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-5 inline-flex items-center gap-3 border-b border-[color:var(--color-bg-accent)] pb-2 font-mono text-[0.6875rem] uppercase tracking-[0.16em] text-[color:var(--color-accent)] transition-colors duration-300 hover:border-[color:var(--color-fg)] hover:text-[color:var(--color-fg)]"
+        >
+          {source.label}
+          <ArrowGlyph />
+        </a>
+      ) : null}
     </motion.article>
   );
 }

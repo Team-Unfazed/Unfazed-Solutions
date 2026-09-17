@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 import { useInView } from "framer-motion";
 
 /** Split "₹5,00,000" into "₹", 500000, "" so the digits can be animated. */
@@ -25,11 +25,25 @@ interface StatCounterProps {
  * Counts up to the figure when it scrolls into view. The digits are written
  * straight to the node's text content, so a 1.6s count costs zero React
  * renders and cannot fight anything else on the page for frames.
+ *
+ * The markup always carries the real figure. The server renders "₹5,00,000",
+ * not "₹0", so a crawler, a reader without JavaScript and a link preview all
+ * get the number; the count is wound back to zero on the client only, and only
+ * where it is going to be played.
  */
 export function StatCounter({ display, className }: StatCounterProps) {
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true, amount: 0.6 });
   const parsed = parse(display);
+
+  // Before first paint, so the finished figure is never seen snapping to zero.
+  useLayoutEffect(() => {
+    const node = ref.current;
+    if (!node || !parsed) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    node.textContent = `${parsed.prefix}0${parsed.suffix}`;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [display]);
 
   useEffect(() => {
     const node = ref.current;
@@ -74,7 +88,7 @@ export function StatCounter({ display, className }: StatCounterProps) {
       className={className}
       style={{ fontVariantNumeric: "tabular-nums" }}
     >
-      {`${parsed.prefix}0${parsed.suffix}`}
+      {display}
     </span>
   );
 }

@@ -1,6 +1,6 @@
-# Unfazed Solution — agency site
+# Unfazed Solutions — agency site
 
-A single-page marketing site for the Unfazed Solution software studio. Dark,
+A single-page marketing site for the Unfazed Solutions software studio. Dark,
 typography-led, monochrome by design: colour appears in the logo mark, and
 everywhere else only once the reader engages with something — the award
 photograph resolves out of grayscale on hover, and a Selected Work card lets
